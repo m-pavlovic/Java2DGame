@@ -13,7 +13,12 @@ public class Player extends Entity {
 
     @Override
     public void setDefaultValue() {
-        super.setDefaultValue();
+        x = 1100;
+        y = 1000;
+        speed = 4;
+        direction = "down";
+        frameIndex = 0;
+        lastFrameTime = System.currentTimeMillis();
     }
 
     public void update(boolean upPressed, boolean downPressed, boolean leftPressed, boolean rightPressed) {

@@ -1,10 +1,11 @@
 package view;
 
+import controller.BackgroundMap;
 import controller.KeyHandler;
+import controller.TileManager;
 import model.Player;
 import model.Entity;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -17,16 +18,18 @@ public class GamePanel extends JPanel implements Runnable {
 
     final int ORIGINAL_TILE_SIZE = 12;
     final int SCALE = 4;
-    final int TILE_SIZE = ORIGINAL_TILE_SIZE * SCALE;
+    public final int TILE_SIZE = ORIGINAL_TILE_SIZE * SCALE;
     final int MAX_SCREEN_COLS = 16;
     final int MAX_SCREEN_ROWS = 12;
-    final int SCREEN_WIDTH = TILE_SIZE * MAX_SCREEN_COLS;
-    final int SCREEN_HEIGHT = TILE_SIZE * MAX_SCREEN_ROWS;
+    public final int SCREEN_WIDTH = TILE_SIZE * MAX_SCREEN_COLS;
+    public final int SCREEN_HEIGHT = TILE_SIZE * MAX_SCREEN_ROWS;
 
+    TileManager tileManager = new TileManager(this);
     Thread gameThread;
     KeyHandler keyHandler;
-    Player player;
+    public Player player;
     List<Entity> entities;
+    BackgroundMap backgroundMap;
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
@@ -35,26 +38,17 @@ public class GamePanel extends JPanel implements Runnable {
         keyHandler = new KeyHandler();
         this.addKeyListener(keyHandler);
         this.setFocusable(true);
-        player = new Player(); // Initialize player here
+        player = new Player();
         entities = new ArrayList<>();
-        entities.add(player); // Add player to the list of entities
+        entities.add(player);
         // Add other entities to the list
+        backgroundMap = new BackgroundMap(this);
         init();
-        layoutComps();
-        activateApp();
     }
 
     private void init() {
         gameThread = new Thread(this);
         gameThread.start();
-    }
-
-    private void layoutComps() {
-        setLayout(new BorderLayout());
-    }
-
-    private void activateApp() {
-        // Implement game activation logic here
     }
 
     @Override
@@ -97,8 +91,13 @@ public class GamePanel extends JPanel implements Runnable {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
 
+        //tileManager.drawTile(g2);
+        backgroundMap.drawMap(g2);
+
         for (Entity entity : entities) {
-            g2.drawImage(entity.getCurrentFrame(), entity.x, entity.y, TILE_SIZE, TILE_SIZE, null);
+            int drawX = SCREEN_WIDTH / 2 - player.x + entity.x;
+            int drawY = SCREEN_HEIGHT / 2 - player.y + entity.y;
+            g2.drawImage(entity.getCurrentFrame(), drawX, drawY, TILE_SIZE, TILE_SIZE, null);
         }
 
         g2.dispose();

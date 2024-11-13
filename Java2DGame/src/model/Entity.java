@@ -18,8 +18,8 @@ public class Entity {
     }
 
     public void setDefaultValue() {
-        x = 100;
-        y = 100;
+        x = 0;
+        y = 0;
         speed = 4;
         direction = "down";
         frameIndex = 0;
@@ -51,10 +51,9 @@ public class Entity {
     }
 
     public void update() {
-        // Update frame index for animation
         long currentTime = System.currentTimeMillis();
         if (currentTime - lastFrameTime > FRAME_DURATION) {
-            frameIndex = (frameIndex + 1) % 4; // Cycle through frames
+            frameIndex = (frameIndex + 1) % 4;
             lastFrameTime = currentTime;
         }
 
